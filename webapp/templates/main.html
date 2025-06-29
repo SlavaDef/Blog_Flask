@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="uk" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Main page</title>
+
+    <!-- Підключення Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+     <style>
+        .b-example-divider {
+            width: 100%;
+            height: 3rem;
+            background-color: rgba(0, 0, 0, 0.1);
+            border: solid rgba(0, 0, 0, .15);
+            border-width: 1px 0;
+        }
+ визначення класу далі можна використовувати у h1, h2....
+
+        .breadcrumb-custom {
+            padding: 1rem;
+        }
+
+    .custom-heading {
+        font-family: 'Comic Sans MS';
+        font-weight: bold;
+    }
+
+     </style>
+
+</head>
+
+<body>
+
+
+<div class="container my-5">
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb p-3 bg-body-tertiary rounded-3">
+                <li class="breadcrumb-item"><a href="/">Main</a></li>
+                <li class="breadcrumb-item"><a href="/login">Profile</a></li>
+
+            </ol>
+        </nav>
+    </div>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    {% for i in range(8) %}
+    <div class="container my-5">
+        <nav aria-label="breadcrumb"></nav>
+    </div>
+    <div class="b-example-divider"></div>
+
+ {% endfor %}
+
+
+
+    <!-- Підключення Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+</html>
+
+<!-- Цей рядок підключає CSS файл фреймворку Bootstrap версії 5.3.0.
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+1. **Що таке bootstrap.min.css**:
+    - Це мініфікована (стиснута) версія CSS-файлу Bootstrap
+    - Містить всі базові стилі Bootstrap:
+        - Сітку (grid system)
+        - Типографіку
+        - Компоненти (кнопки, форми, навігацію, тощо)
+        - Утиліти (класи для відступів, кольорів, тощо)
+
+2. **CDN (Content Delivery Network)**:
+    - `https://cdn.jsdelivr.net` - це CDN-сервіс jsDelivr
+    - Забезпечує швидку доставку файлів користувачам з найближчого сервера
+    - Підвищує швидкість завантаження сайту
+
+3. **Структура URL**:
+    - `/npm/` - вказує на пакет з npm
+    - `bootstrap@5.3.0` - назва пакету та його версія
+    - `/dist/` - директорія з готовими для використання файлами
+    - `bootstrap.min.css` - мініфікований CSS файл
+
+4. **Атрибути**:
+    - `rel="stylesheet"` - вказує, що це файл стилів
+    - `href="..."` - URL до файлу
+
+визначення класу далі можна використовувати у h1, h2....
+
+        .breadcrumb-custom {
+            padding: 1rem;
+        }
+
+
+   -->
