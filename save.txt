@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Вхід</title>
+    <style>
+        .form-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .flash-message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .success { background-color: #d4edda; }
+        .error { background-color: #f8d7da; }
+
+        .custom-heading {
+        font-family: 'Comic Sans MS';
+        font-weight: bold;
+    }
+
+    </style>
+
+</head>
+<body>
+    <div class="form-container">
+        <h2 class="custom-heading">Вхід в систему</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="form-group">
+                <label for="email" class="custom-heading">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="custom-heading">Пароль:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <button type="submit" class="custom-heading">Увійти</button>
+        </form>
+
+        <p class="custom-heading">Ще не зареєстровані? <a href="{{ url_for('register') }}">Зареєструватися</a></p>
+    </div>
+</body>
+</html>
+
+
+----------------------------------------------------------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html lang="uk" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Реєстрація</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .registration-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin: 2rem auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            height: 50px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            padding: 0.75rem 1rem;
+            border: 2px solid #dee2e6;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        .btn-register {
+            width: 100%;
+            height: 50px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            background-color: #007bff;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .btn-register:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <!-- Навігаційне меню -->
+    <div class="container my-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb p-3 bg-body-tertiary rounded-3">
+                <li class="breadcrumb-item"><a href="/">Main</a></li>
+                <li class="breadcrumb-item"><a href="/login">Login</a></li>
+            </ol>
+        </nav>
+    </div>
+
+    <!-- Контейнер для flash-повідомлень -->
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Форма реєстрації -->
+    <div class="registration-container">
+        <h2 class="modal-title">Реєстрація</h2>
+
+        <form method="POST" action="{{ url_for('login') }}">
+
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email"
+                       pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Пароль</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-register">Зареєструватися</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <a href="{{ url_for('login') }}" class="text-decoration-none">Вже маєте акаунт? Увійти</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

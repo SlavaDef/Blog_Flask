@@ -31,6 +31,39 @@
     max-width: 90vw;
     object-fit: contain;
 }
+
+        .share-buttons .btn {
+            margin: 5px;
+        }
+
+  /* Додаємо власний стиль кнопки */
+input[type="file"]::before {
+    content: 'Виберіть файл';
+    display: inline-block;
+    background-color: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem 0 0 0.375rem;
+    border-right: 1px solid var(--bs-border-color);
+    margin-right: 0.75rem;
+}
+
+
+       /* Приховуємо стандартний текст браузера для всіх браузерів */
+input[type="file"]::-webkit-file-upload-button,
+input[type="file"]::file-selector-button {
+    visibility: hidden;
+    width: 0;
+}
+
+* Додаємо стиль для тексту стану */
+.file-status {
+    color: var(--bs-body-color);
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+}
+
+
 </style>
 
 
@@ -106,6 +139,11 @@
 
 
                     <div>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#shareModal">
+                              <i class="bi bi-share"></i> Поділитися
+                        </button>
+                              <p></p>
+
                            {% if session.username == post[3] %}
 
                          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">
@@ -196,8 +234,10 @@
                     </div>  -->
                     <div class="mb-3">
                        <label for="image" class="form-label">Зображення</label>
-                       <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                   </div>
+                       <input type="file" class="form-control" id="image" name="image" accept="image/*" lang="uk">
+                       <div class="form-text">Підтримуються формати: PNG, JPG, JPEG, GIF</div>
+
+                    </div>
 
                 </div>
                 <div class="modal-footer">
@@ -249,6 +289,92 @@ function openImageModal(imageSrc) {
 </script>
 
 
+<div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="shareModalLabel">Поділитися постом</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="share-buttons d-flex flex-wrap justify-content-center">
+                    <button class="btn btn-primary" onclick="shareVia('telegram')">
+                        <i class="bi bi-telegram"></i> Telegram
+                    </button>
+                    <button class="btn btn-purple" onclick="shareVia('viber')" style="background-color: #665CAC; color: white;">
+                        <i class="bi bi-phone"></i> Viber
+                    </button>
+                    <button class="btn btn-success" onclick="shareVia('whatsapp')">
+                        <i class="bi bi-whatsapp"></i> WhatsApp
+                    </button>
+                    <button class="btn btn-secondary" onclick="copyLink()">
+                        <i class="bi bi-clipboard"></i> Копіювати посилання
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function shareVia(platform) {
+    const url = window.location.href;
+    const title = document.title;
+    let shareUrl;
+
+    switch(platform) {
+        case 'telegram':
+            shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`;
+            break;
+        case 'viber':
+            shareUrl = `viber://forward?text=${encodeURIComponent(title + ' ' + url)}`;
+            break;
+        case 'whatsapp':
+            shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' ' + url)}`;
+            break;
+    }
+
+    if (shareUrl) {
+        window.open(shareUrl, '_blank');
+    }
+}
+
+function copyLink() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        alert('Посилання скопійовано!');
+    }).catch(err => {
+        console.error('Помилка копіювання: ', err);
+    });
+}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+
+    fileInputs.forEach(input => {
+        // Видаляємо попередній статус, якщо він існує
+        const existingStatus = input.parentNode.querySelector('.file-status');
+        if (existingStatus) {
+            existingStatus.remove();
+        }
+
+        // Створюємо новий елемент для статусу
+        const statusDiv = document.createElement('div');
+        statusDiv.className = 'file-status';
+        statusDiv.textContent = 'Файл не вибрано';
+        input.parentNode.insertBefore(statusDiv, input.nextSibling);
+
+        // Оновлюємо статус при виборі файлу
+        input.addEventListener('change', function() {
+            const fileName = this.files[0]?.name;
+            statusDiv.textContent = fileName ? `Вибрано файл: ${fileName}` : 'Файл не вибрано';
+        });
+    });
+});
+
+</script>
 
 </body>
 </html>
