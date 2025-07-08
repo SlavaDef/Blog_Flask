@@ -1,9 +1,29 @@
 <!DOCTYPE html>
-<html lang="uk" data-bs-theme="dark">
+<html lang="uk" data-bs-theme="auto">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Post</title>
+
+     <script>
+        // Функція для встановлення теми
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        // Перевірка збереженої теми або системних налаштувань
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            setTheme(savedTheme);
+        } else {
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                setTheme('dark');
+            } else {
+                setTheme('light');
+            }
+        }
+    </script>
 
     <!-- Підключення Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -44,8 +64,14 @@
 
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb p-3 bg-body-tertiary rounded-3">
-                <li class="breadcrumb-item"><a href="/">Main</a></li>
+                <li class="breadcrumb-item"><a href="/profile">My_prof</a></li>
                 <li class="breadcrumb-item"><a href="/all_posts">All_posts</a></li>
+               <li class="breadcrumb-item ms-auto">
+               <button type="button" class="btn btn-outline-secondary btn-sm" onclick="toggleTheme()" id="themeToggle">
+                      <i class="bi bi-moon-fill"></i>
+              </button>
+           </li>
+
             </ol>
         </nav>
     </div>
@@ -153,6 +179,20 @@ document.getElementById('image').onchange = function(evt) {
     }
 };
 </script>
+
+<script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+
+            // Оновлення іконки
+            const icon = document.querySelector('#themeToggle i');
+            icon.className = newTheme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+        }
+    </script>
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
 
 </body>

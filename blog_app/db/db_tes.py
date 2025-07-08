@@ -1,4 +1,4 @@
-from blog_app.db.user_service import UserDatabase
+from blog_app.db.service import UserDatabase
 
 db = UserDatabase()
 

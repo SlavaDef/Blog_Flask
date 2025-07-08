@@ -1,0 +1,80 @@
+Так, вам потрібно створити декоратор для перевірки прав доступу користувача. Ось як це можна реалізувати:
+``` python
+from functools import wraps
+from flask import session, flash, redirect, url_for
+
+def check_post_owner(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('Спочатку увійдіть в систему', 'error')
+            return redirect(url_for('login'))
+
+        post_id = kwargs.get('post_id')
+        if post_id:
+            post = user_db.get_post(post_id)
+            if not post:
+                flash('Пост не знайдено', 'error')
+                return redirect(url_for('all_posts'))
+
+            if post[6] != session['user_id']:  # перевіряємо user_id поста
+                flash('У вас немає прав для цієї дії', 'error')
+                return redirect(url_for('all_posts'))
+
+        return f(*args, **kwargs)
+    return decorated_function
+```
+Тепер додайте цей декоратор до відповідних маршрутів:
+``` python
+@app.route('/post/<int:post_id>')
+@check_post_owner
+def post_detail(post_id):
+    post = user_db.get_post(post_id)
+    return render_template('post_detail.html', post=post)
+
+@app.route('/update/<int:post_id>', methods=['POST'])
+@check_post_owner
+def update_post(post_id):
+    # ваш код оновлення поста
+
+@app.route('/delete/<int:post_id>', methods=['POST'])
+@check_post_owner
+def delete_post(post_id):
+    # ваш код видалення поста
+```
+Також змініть маршрут для відображення всіх постів, щоб показувати тільки пости поточного користувача:
+``` python
+@app.route('/all_posts')
+def all_posts():
+    if 'user_id' not in session:
+        flash('Спочатку увійдіть в систему', 'error')
+        return redirect(url_for('login'))
+
+    # Додайте метод для вибірки постів конкретного користувача
+    posts = user_db.get_user_posts(session['user_id'])
+    return render_template('all_posts.html', results=posts)
+```
+І додайте новий метод в клас UserDatabase:
+``` python
+def get_user_posts(self, user_id):
+    try:
+        with sqlite3.connect(self.db_name) as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT id, title, content, author, image_path,
+                strftime('%d.%m.%Y %H:%M', datetime(created_at, '+3 hours')) as formatted_date,
+                user_id
+                FROM posts
+                WHERE user_id = ?
+                ORDER BY created_at DESC
+            """, (user_id,))
+            return cursor.fetchall()
+    except Exception as e:
+        print(f'Error getting user posts: {e}')
+        return []
+```
+Ці зміни забезпечать:
+1. Перевірку авторизації користувача
+2. Перевірку прав доступу до постів
+3. Відображення тільки власних постів користувача
+4. Захист від несанкціонованого редагування/видалення чужих пості

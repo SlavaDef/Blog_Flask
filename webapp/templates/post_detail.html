@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="uk" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ post[1] }}</title>
+
+  <script>
+        // Функція для встановлення теми
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        // Перевірка збереженої теми або системних налаштувань
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            setTheme(savedTheme);
+        } else {
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                setTheme('dark');
+            } else {
+                setTheme('light');
+            }
+        }
+    </script>
+
+    <style>
+.modal-fullscreen-image {
+    max-height: 90vh;
+    max-width: 90vw;
+    object-fit: contain;
+}
+</style>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+ <div class="container my-5">
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb p-3 bg-body-tertiary rounded-3">
+                <li class="breadcrumb-item"><a href="/all_posts">All_posts</a></li>
+               <li class="breadcrumb-item ms-auto">
+                    <button class="btn btn-outline-secondary btn-sm" onclick="toggleTheme()" id="themeToggle">
+                        <i class="bi bi-moon-fill"></i>
+                    </button>
+                </li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Main</a></li>
+                <li class="breadcrumb-item"><a href="/all_posts">All_posts</a></li>
+                <li class="breadcrumb-item active">{{ post[1] }}</li>
+            </ol>
+        </nav>
+
+        <div class="card">
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-start">
+
+
+                    <div class="card h-100">
+                        <h1 class="card-title">{{ post[1] }}</h1>
+
+                <!-- {% if post[4] %}
+                    {% set image_path = post[4].replace('\\', '/') %}
+
+                    <img src="{{ url_for('static', filename=image_path) }}"
+                         class="card-img-top"
+                         alt="Зображення поста"
+                         style="height: 200px; object-fit: cover;"
+                         onerror="console.log('Failed to load image:', this.src)">
+                {% endif %}
+
+                        {% if post[4] %}
+                   {% set image_path = post[4].replace('\\', '/') %}
+                   <a href="{{ url_for('static', filename=image_path) }}" target="_blank">
+                   <img src="{{ url_for('static', filename=image_path) }}"
+                       class="card-img-top"
+                      alt="Зображення поста"
+                      style="height: 200px; object-fit: cover; cursor: pointer;"
+                       onerror="console.log('Failed to load image:', this.src)">
+                    </a>
+                         {% endif %}  -->
+
+                        {% if post[4] %}
+                 {% set image_path = post[4].replace('\\', '/') %}
+                <img src="{{ url_for('static', filename=image_path) }}"
+                    class="card-img-top"
+                    alt="Зображення поста"
+               style="height: 200px; object-fit: cover; cursor: pointer;"
+               onclick="openImageModal(this.src)"
+               onerror="console.log('Failed to load image:', this.src)">
+                              {% endif %}
+
+
+                    </div>
+
+
+                    <div>
+
+                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">
+                          <i class="bi bi-pencil-square"></i> Редагувати
+                         </button>
+
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="bi bi-trash"></i> Видалити
+                        </button>
+                    </div>
+                </div>
+                <div class="text-muted mb-4">
+                    <small>Автор: {{ post[3] }} | Дата: {{ post[5] }}</small>
+                </div>
+                <div class="card-text">
+                    {{ post[2] }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальне вікно підтвердження видалення -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Підтвердження видалення</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Ви впевнені, що хочете видалити цей пост?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                    <form action="/delete/{{ post[0] }}" method="POST" style="display: inline;">
+                        <button type="submit" class="btn btn-danger">Видалити</button>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Додаємо іконки Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+<!-- Модальне вікно редагування -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Редагування поста</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/update/{{ post[0] }}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+
+                    <!-- {% if post[4] %}
+                <div class="mb-3">
+                <label class="form-label">Поточне зображення:</label>
+                <img src="{{ url_for('static', filename=post[4].replace('\\', '/')) }}"
+                     class="img-thumbnail"
+                    style="max-height: 200px;">
+                </div>
+                    {% endif %}
+
+                    {% if post[4] %}
+                 <div class="mb-3"> тут зображення буде загружатися
+                 <label class="form-label">Поточне зображення:</label>
+                 <a href="{{ url_for('static', filename=post[4].replace('\\', '/')) }}" target="_blank">
+                     1. Атрибут `target="_blank"` відкриває зображення в новій вкладці
+                <img src="{{ url_for('static', filename=post[4].replace('\\', '/')) }}"
+                      class="img-thumbnail"
+                       style="max-height: 200px; cursor: pointer;">
+                     cursor: pointer; 1. показ користувачу, що на нього можна клікнути
+                   </a>
+                                </div>
+                         {% endif %}   -->
+
+                             {% if post[4] %}
+                       <div class="mb-3">
+               <label class="form-label">Поточне зображення:</label>
+                  <img src="{{ url_for('static', filename=post[4].replace('\\', '/')) }}"
+                          class="img-thumbnail"
+                         style="max-height: 200px; cursor: pointer;"
+                         onclick="openImageModal(this.src)">
+                      </div>
+                            {% endif %}
+
+
+
+
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Заголовок</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ post[1] }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="some_text" class="form-label">Текст</label>
+                        <textarea class="form-control" id="some_text" name="some_text" rows="5" required>{{ post[2] }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="author" class="form-label">Автор</label>
+                        <input type="text" class="form-control" id="author" name="author" value="{{ post[3] }}" required minlength="1">
+                    </div>
+                    <div class="mb-3">
+                       <label for="image" class="form-label">Зображення</label>
+                       <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                   </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="submit" class="btn btn-primary">Зберегти зміни</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+
+            // Оновлення іконки
+            const icon = document.querySelector('#themeToggle i');
+            icon.className = newTheme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+        }
+    </script>
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+
+           <!-- для відображення картинки на окремій сторінці -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-0">
+                <img src="" id="modalImage" class="modal-fullscreen-image">
+            </div>
+        </div>
+    </div>
+</div>
+     <!-- для відображення картинки на окремій сторінці -->
+<script>
+function openImageModal(imageSrc) {
+    const modalImage = document.getElementById('modalImage');
+    modalImage.src = imageSrc;
+    const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+    modal.show();
+}
+</script>
+
+
+
+</body>
+</html>

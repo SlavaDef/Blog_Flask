@@ -3,8 +3,7 @@ import os
 from flask import render_template, Flask, request, session, flash, redirect, url_for
 
 from blog_app.db.photo_safer import save_image
-from blog_app.db.user_service import UserDatabase
-from datetime import datetime
+from blog_app.db.service import UserDatabase
 import html
 
 app = Flask(__name__)
@@ -43,8 +42,8 @@ def register():
 def profile():
     if 'user_id' not in session:
         flash('Спочатку увійдіть в систему натиснувши Login', 'error')
-        return redirect(url_for('register'))
-    return render_template('profile.html')
+        return redirect(url_for('register')) # переадресація на метод def register()
+    return render_template('profile.html') # повернення сторінки
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -108,45 +107,77 @@ def create_post() -> 'html':
 
         if success:
             flash('Пост успішно створено!', 'success')
-            return redirect(url_for('all_blogs'))
+            return redirect(url_for('my_posts'))
         else:
             flash(message, 'error')
             return render_template('new_post.html')
 
     except Exception as e:
         flash(f'Помилка при створенні поста: {str(e)}', 'error')
-        return render_template('new_post.html')
+        return render_template('all_posts.html')
 
 
 @app.route('/all_posts')
 def my_posts():
     posts = user_db.select_all_posts()
-
-    # Додаємо відладочний вивід
-    for post in posts:
-        print(f"Debug - Post data: {post}")
-        print(f"Debug - Image path type: {type(post[5])}")
-
-    formatted_posts = []
-    for post in posts:
-        post = list(post)
-        # Перевіряємо тип даних перед викликом replace
-        if post[5] is not None:
-            # Конвертуємо в рядок, якщо це не рядок
-            image_path = str(post[5]).replace('\\', '/')
-            # Видаляємо 'uploads/' з початку шляху, якщо він там є
-            if image_path.startswith('uploads/'):
-                image_path = image_path[8:]
-            post[5] = image_path
-        formatted_posts.append(post)
-
-    return render_template('all_posts.html', results=formatted_posts)
-
-
-#@app.route('/my_posts')
-def my_posts22():
-    posts = user_db.select_all_posts()
     return render_template('all_posts.html', results=posts)
+
+
+@app.route('/post/<int:post_id>')
+def post_detail(post_id):
+    post = user_db.get_post(post_id)
+    if post is None:
+        return "Пост не найден", 404
+    return render_template('post_detail.html', post=post)
+
+
+
+@app.route('/delete/<int:post_id>', methods = ['POST'])
+def delete_post_route(post_id):
+    try:
+        user_db.delete_post(post_id)
+        flash('Пост успішно видалено', 'success')
+    except Exception as e:
+        flash(f'Помилка при видаленні поста: {str(e)}', 'error')
+
+    return redirect(url_for('my_posts'))
+
+
+@app.route('/update/<int:post_id>', methods=['GET', 'POST'])
+def update_post_route(post_id):
+    if request.method == 'POST':
+
+        try:
+            title = request.form.get('title')
+            some_text = request.form.get('some_text')
+            author = request.form.get('author')  # отримуємо значення з форми
+
+            # Обробка зображення
+            image_path = None
+            if 'image' in request.files and request.files['image'].filename != '':
+                # Якщо нове фото не завантажене, передаємо None,
+                # і функція update_post збереже існуюче
+
+                file = request.files['image']
+                image_path = save_image(file)
+
+            # Викликаємо update_post з правильним порядком аргументів
+            success = user_db.update_post(
+                post_id=post_id,
+                title=title,
+                content=some_text,
+                author=author,  # переконайтесь що це значення не None
+                image_path=image_path
+            )
+
+            if success:
+                flash('Пост успішно відредаговано', 'success')
+            return redirect(url_for('my_posts'))
+
+        except Exception as e:
+            flash(f'Помилка при редагуванні поста: {str(e)}', 'error')
+            return redirect(url_for('my_posts'))
+
 
 if __name__ == '__main__':
 

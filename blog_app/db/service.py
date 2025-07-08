@@ -106,6 +106,7 @@ class UserDatabase:
         except Exception as e:
             return False, f"Помилка при створенні поста: {str(e)}"
 
+
     def check_table_structure(self):
         with sqlite3.connect(self.db_name) as conn:
             cursor = conn.cursor()
@@ -122,10 +123,59 @@ class UserDatabase:
                 cursor = conn.cursor()
                 cursor.execute("""
             SELECT id, title, content, author, image_path, 
-            strftime('%d.%m.%Y %H:%M', created_at) as formatted_date,
+            strftime('%d.%m.%Y %H:%M', datetime(created_at, '+3 hours')) as formatted_date,
             user_id
             FROM posts
             ORDER BY created_at DESC
             """)
                 posts = cursor.fetchall()
             return posts
+
+
+    def get_post(self, post_id):
+        try:
+            with sqlite3.connect(self.db_name) as conn:
+                cursor = conn.cursor()
+                #cursor.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
+                cursor.execute("""
+                            SELECT id, title, content, author, image_path, 
+                            strftime('%d.%m.%Y %H:%M', datetime(created_at, '+3 hours')) as formatted_date,
+                            user_id FROM posts WHERE id = ?""", (post_id,))
+                post = cursor.fetchone()
+                return post if post else None
+        except Exception as e:
+            print(f'Error getting post: {e}')
+            raise
+
+
+    def update_post(self, post_id, title, content, author, image_path=None):
+
+        try:
+              with sqlite3.connect(self.db_name) as conn:
+                  cursor = conn.cursor()
+                # Якщо нове фото не завантажене, зберігаємо існуюче
+                  if image_path is None:
+                      cursor.execute('SELECT image_path FROM posts WHERE id = ?', (post_id,))
+                      result = cursor.fetchone()
+                      if result:
+                          image_path = result[0]
+
+                  cursor.execute('''
+                   UPDATE posts 
+                   SET title = ?, content = ?, author = ?, image_path = ? 
+                   WHERE id = ?
+               ''', (title, content, author, image_path, post_id))
+              return cursor.rowcount > 0  # Оновлення успішне
+
+        except Exception as e:
+            raise Exception(f"Помилка бази даних: {str(e)}")
+
+
+    def delete_post(self, post_id):
+        try:
+            with sqlite3.connect(self.db_name) as conn:
+                cursor = conn.cursor()
+
+                cursor.execute("DELETE FROM posts WHERE id = ?", (post_id,))
+        except sqlite3.Error as e:
+            raise Exception(f"Помилка бази даних: {str(e)}")
