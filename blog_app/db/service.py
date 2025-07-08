@@ -136,7 +136,6 @@ class UserDatabase:
         try:
             with sqlite3.connect(self.db_name) as conn:
                 cursor = conn.cursor()
-                #cursor.execute("SELECT * FROM posts WHERE id = ?", (post_id,))
                 cursor.execute("""
                             SELECT id, title, content, author, image_path, 
                             strftime('%d.%m.%Y %H:%M', datetime(created_at, '+3 hours')) as formatted_date,
@@ -148,7 +147,7 @@ class UserDatabase:
             raise
 
 
-    def update_post(self, post_id, title, content, author, image_path=None):
+    def update_post(self, post_id, title, content, image_path=None):
 
         try:
               with sqlite3.connect(self.db_name) as conn:
@@ -162,9 +161,9 @@ class UserDatabase:
 
                   cursor.execute('''
                    UPDATE posts 
-                   SET title = ?, content = ?, author = ?, image_path = ? 
+                   SET title = ?, content = ?, image_path = ? 
                    WHERE id = ?
-               ''', (title, content, author, image_path, post_id))
+               ''', (title, content, image_path, post_id))
               return cursor.rowcount > 0  # Оновлення успішне
 
         except Exception as e:

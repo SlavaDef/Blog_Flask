@@ -6,6 +6,8 @@ from blog_app.db.photo_safer import save_image
 from blog_app.db.service import UserDatabase
 import html
 
+from blog_app.decorator import check_post_owner
+
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Обмеження розміру файлу (16MB)
 app.secret_key = os.urandom(24) # без ключа сесії не працюють
@@ -124,6 +126,7 @@ def my_posts():
 
 
 @app.route('/post/<int:post_id>')
+#@check_post_owner
 def post_detail(post_id):
     post = user_db.get_post(post_id)
     if post is None:
@@ -133,6 +136,7 @@ def post_detail(post_id):
 
 
 @app.route('/delete/<int:post_id>', methods = ['POST'])
+@check_post_owner
 def delete_post_route(post_id):
     try:
         user_db.delete_post(post_id)
@@ -144,13 +148,14 @@ def delete_post_route(post_id):
 
 
 @app.route('/update/<int:post_id>', methods=['GET', 'POST'])
+@check_post_owner
 def update_post_route(post_id):
     if request.method == 'POST':
 
         try:
             title = request.form.get('title')
             some_text = request.form.get('some_text')
-            author = request.form.get('author')  # отримуємо значення з форми
+            #author = request.form.get('author')  # отримуємо значення з форми
 
             # Обробка зображення
             image_path = None
@@ -166,7 +171,7 @@ def update_post_route(post_id):
                 post_id=post_id,
                 title=title,
                 content=some_text,
-                author=author,  # переконайтесь що це значення не None
+                #author=author,  # переконайтесь що це значення не None
                 image_path=image_path
             )
 

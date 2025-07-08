@@ -3,7 +3,7 @@
 
 <head>
     <title>Профіль користувача</title>
-     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
@@ -28,6 +28,51 @@
         font-weight: bold;
     }
 
+          .feature-list {
+    padding: 20px;
+}
+
+.feature-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.custom-heading {
+    color: #007bff;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.feature-description {
+    padding-left: 20px;
+}
+
+.feature-description ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.feature-description li {
+    margin: 10px 0;
+    font-size: 1.1em;
+}
+
+.feature-description p {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    color: #6c757d;
+}
+
+
      </style>
 </head>
 
@@ -39,7 +84,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb p-3 bg-body-tertiary rounded-3">
                 <li class="breadcrumb-item"><a href="/">Main</a></li>
-                <li class="breadcrumb-item"><a href="/all_posts">Мої пости</a></li>
+                <li class="breadcrumb-item"><a href="/all_posts">Всі пости</a></li>
                 <li class="breadcrumb-item"><a href="/new_post">Новий пост</a></li>
                 <li class="breadcrumb-item"><a href="/logout">Вийти</a></li>
 
@@ -49,6 +94,25 @@
 
 <h1>Ласкаво просимо на вашу сторінку!</h1>
     <p>Ви успішно увійшли в систему.</p>
+
+<div class="b-example-divider">
+    <div class="feature-list">
+
+        <div class="feature-item">
+            <h2 class="custom-heading">
+                <i class="fas fa-exchange-alt"></i> Post
+            </h2>
+            <div class="feature-description">
+                <p>💰 Створіть пост</p>
+                <ul>
+                    <li>✨ Створіть пост чи перегляньте інші </li>
+                    <li>📊 Опишить свій день, новину, ємоції </li>
+                    <li>🌍 Поділіться фото, локаціями</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 

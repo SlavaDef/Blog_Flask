@@ -106,14 +106,17 @@
 
 
                     <div>
+                           {% if session.username == post[3] %}
 
                          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">
                           <i class="bi bi-pencil-square"></i> Редагувати
                          </button>
-
+                                <p></p>
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <i class="bi bi-trash"></i> Видалити
                         </button>
+                         {% endif %}
+
                     </div>
                 </div>
                 <div class="text-muted mb-4">
@@ -164,27 +167,7 @@
             <form action="/update/{{ post[0] }}" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
 
-                    <!-- {% if post[4] %}
-                <div class="mb-3">
-                <label class="form-label">Поточне зображення:</label>
-                <img src="{{ url_for('static', filename=post[4].replace('\\', '/')) }}"
-                     class="img-thumbnail"
-                    style="max-height: 200px;">
-                </div>
-                    {% endif %}
 
-                    {% if post[4] %}
-                 <div class="mb-3"> тут зображення буде загружатися
-                 <label class="form-label">Поточне зображення:</label>
-                 <a href="{{ url_for('static', filename=post[4].replace('\\', '/')) }}" target="_blank">
-                     1. Атрибут `target="_blank"` відкриває зображення в новій вкладці
-                <img src="{{ url_for('static', filename=post[4].replace('\\', '/')) }}"
-                      class="img-thumbnail"
-                       style="max-height: 200px; cursor: pointer;">
-                     cursor: pointer; 1. показ користувачу, що на нього можна клікнути
-                   </a>
-                                </div>
-                         {% endif %}   -->
 
                              {% if post[4] %}
                        <div class="mb-3">
@@ -207,10 +190,10 @@
                         <label for="some_text" class="form-label">Текст</label>
                         <textarea class="form-control" id="some_text" name="some_text" rows="5" required>{{ post[2] }}</textarea>
                     </div>
-                    <div class="mb-3">
+                  <!--  <div class="mb-3">
                         <label for="author" class="form-label">Автор</label>
                         <input type="text" class="form-control" id="author" name="author" value="{{ post[3] }}" required minlength="1">
-                    </div>
+                    </div>  -->
                     <div class="mb-3">
                        <label for="image" class="form-label">Зображення</label>
                        <input type="file" class="form-control" id="image" name="image" accept="image/*">

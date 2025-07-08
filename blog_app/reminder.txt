@@ -1,0 +1,28 @@
+  1. Перший, стандартний варіант без можливості перегляду фото
+
+  {% if post[4] %}
+                <div class="mb-3">
+                <label class="form-label">Поточне зображення:</label>
+                <img src="{{ url_for('static', filename=post[4].replace('\\', '/')) }}"
+                     class="img-thumbnail"
+                    style="max-height: 200px;">
+                </div>
+                    {% endif %}
+
+2. Варіант із завантаженням фото на комп
+
+                    {% if post[4] %}
+                 <div class="mb-3">
+                 <label class="form-label">Поточне зображення:</label>
+                 <a href="{{ url_for('static', filename=post[4].replace('\\', '/')) }}" target="_blank">
+                     <img src="{{ url_for('static', filename=post[4].replace('\\', '/')) }}"
+                      class="img-thumbnail"
+                       style="max-height: 200px; cursor: pointer;">
+                   </a>
+                                </div>
+                         {% endif %}
+
+cursor: pointer; - показ користувачу, що на нього можна клікнути
+Атрибут `target="_blank"` відкриває зображення в новій вкладці
+
+------------------------------------------------------------------------------------------------------------------------
