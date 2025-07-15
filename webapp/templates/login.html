@@ -76,14 +76,7 @@
 
 </head>
 <body>
-<div class="position-absolute top-0 start-0 w-100 p-3">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Головна</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Вхід</li>
-        </ol>
-    </nav>
-</div>
+
 
 
     <div class="form-container">
@@ -108,7 +101,8 @@
             </div>
 
             <div class="form-group">
-                <label for="password" class="form-label">Пароль:</label>
+               <!-- <label for="password" class="form-label">Пароль:</label> -->
+                <label for="password" class="custom-heading">Пароль:</label>
                 <input type="password" id="password" name="password" class="form-control" required>
             </div>
 
@@ -119,7 +113,7 @@
         <p class="text-center mt-3">
         Ще не зареєстровані?
         <a href="{{ url_for('register') }}" class="text-decoration-none">
-            Зареєструватися
+            Зареєструватися 
         </a>
     </p>
 

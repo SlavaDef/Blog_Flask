@@ -18,7 +18,8 @@ user_db = UserDatabase()
 
 @app.route('/')
 def main_page():
-    return render_template('main.html')
+    return redirect(url_for('my_posts'))
+
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -122,6 +123,19 @@ def create_post() -> 'html':
 @app.route('/all_posts')
 def my_posts():
     posts = user_db.select_all_posts()
+    return render_template('all_posts.html', results=posts)
+
+
+@app.route('/all_my_posts')
+@check_post_owner
+def all_my_posts():
+
+    author = session['username']
+    posts = user_db.get_posts_by_author(author=author)
+
+    if not posts:
+        flash('У вас поки немає постів', 'info')
+
     return render_template('all_posts.html', results=posts)
 
 

@@ -132,6 +132,25 @@ class UserDatabase:
             return posts
 
 
+    def get_posts_by_author(self, author: str):
+        try:
+            with sqlite3.connect(self.db_name) as conn:
+                cursor = conn.cursor()
+                cursor.execute("""
+                    SELECT id, title, content, author, image_path,
+                    strftime('%d.%m.%Y %H:%M', datetime(created_at, '+3 hours')) as formatted_date,
+                    user_id
+                    FROM posts 
+                    WHERE author = ?
+                    ORDER BY created_at DESC
+                """, (author,))
+                posts = cursor.fetchall()
+                return posts
+        except Exception as e:
+            print(f'Помилка при отриманні постів автора: {e}')
+            return []
+
+
     def get_post(self, post_id):
         try:
             with sqlite3.connect(self.db_name) as conn:
